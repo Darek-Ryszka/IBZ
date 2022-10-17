@@ -9,29 +9,60 @@
 <body>
     <style>
         *{
+            font-family: sans-serif; 
+        }
+        .navbar{
             font-family: sans-serif;
             text-align: center;
         }
     </style>    
-    <h1>Zadanie 1</h1>
-    <h5>Dariusz Ryszka D3 146325</h5>
-    <!-- Kod zadania 1 -->
-    <?php
-        $adres = "localhost";
-        $użytkownik = "Darek";
-        $hasło = "Darek123";
-        $nazwabazy = "baza";
+    <h1 class=navbar>Zadanie 1</h1>
+    <h5 class=navbar>Dariusz Ryszka D3 146325</h5>
+    <h4><b>Dodaj użytkownika</b></h4>
 
-        echo "Hello World <br>";
+    <form action="" method="post">
+        <p>
+            <label for="firstName">Imie:</label></br>
+            <input type="text" name="fname" id="firstName" required>
+        </p>
+        <p>
+            <label for="emailAddress">Email:</label></br>
+            <input type="text" name="email" id="emailAddress" required>
+        </p>
+        <input type="submit" name="insert" value="Register Subscriber">
+    </form>
 
-        try {
-            $conn = new PDO("mysql:host=$adres;dbname=$nazwabazy", $użytkownik, $hasło);
-            echo "Sukces ! Połączenie z bazą danych powiodło się";
-          } catch(PDOException $e) {
-            echo "Błąd ! Połączenie z bazą danych nie powiodło się";
-          }
-        $conn = null;  
-    ?>
-    <!-- Koniec zadania 1 -->
+    <?php 
+    // Próba połaczenia z bazą danych
+    if(isset($_POST['insert']))
+    {
+            try{
+                $pdo = new PDO("mysql:host=localhost;dbname=test", "root", "");
+                echo "Sukces ! Połączenie z bazą danych powiodło się";
+            } catch(PDOException $e){
+                echo "Błąd ! Połączenie z bazą danych nie powiodło się";
+            }
+
+            // sdasdasdsadas
+            try{
+            $sql = "INSERT INTO subscribers (fname, email) VALUES (:first_name, :email)";
+            $stmt = $pdo->prepare($sql);
+            
+            // Bind parameters to statement Przypisanie
+            $stmt->bindParam(':first_name', $_REQUEST['fname']);
+            $stmt->bindParam(':email', $_REQUEST['email']);
+            
+            // Execute the prepared statement Próba wykonania polecenia
+            
+            $stmt->execute();
+            echo "Sukces ! Dane wprowadzono poprawnie.";
+        } catch(PDOException $e){
+            die("Błąd ! Nie można wprowadzić danych $sql. " . $e->getMessage());
+        }
+    }
+
+    // Zamknięcie połączenia z bazą danych
+    unset($pdo);
+    ?>   
 </body>
 </html>
