@@ -7,6 +7,7 @@
         <title>Zadanie 2</title>
     </head>
     <body>
+        <!-- Stylizacja czcionki i tablicy w CSS-->
         <style>
             *{
                 font-family: sans-serif; 
@@ -26,13 +27,14 @@
         <h4><b>Edit - po edycji użytkownika zostanie uruchomiony wyzwalacz.</b></h4>
 
         <?php
+            // Próba połaczenia z bazą danych
             try{
                 $pdo = new PDO("mysql:host=localhost;dbname=test", "root", "");
                 echo "Sukces! Połączenie z bazą danych powiodło się. </br>";
             } catch(PDOException $e){
                 echo "Błąd! Połączenie z bazą danych nie powiodło się. </br>";
             }
-
+            // Próba wypisania wszystkich rekordów z bazy danych
             try{
                 $sql = "SELECT * FROM subscribers";   
                 $result = $pdo->query($sql);
@@ -58,13 +60,12 @@
                         echo "</tr>";
                     }
                     echo "</table>";
-                    // Free result set
                     unset($result);
                 } else{
                     echo "Brak rekordów w bazie danych do wyświetlenia.";
                 }
             } catch(PDOException $e){
-                die("ERROR: Could not able to execute $sql. " . $e->getMessage());
+                die("Błąd! Nie można wprowadzić danych $sql. " . $e->getMessage());
             }
             // Zamknięcie połączenia z bazą danych
             unset($pdo);

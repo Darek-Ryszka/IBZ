@@ -6,21 +6,26 @@
     } catch(PDOException $e){
         echo "Błąd! Połączenie z bazą danych nie powiodło się. </br>";
     }
-    // Próba pobrania id i usuniędzie użytkownika o pobranym id
-    if(isset($_GET['id'])){
 
+    if(isset($_GET['id']) && isset($_POST['edit'])){
         $id = $_GET['id'];
-        $sql = "DELETE FROM subscribers WHERE id = $id";
+        $name = $_POST['fname'];
+        $email = $_POST['email'];
+
+        $sql = "UPDATE subscribers SET 
+        fname = '$name',
+        email = '$email'
+        WHERE id = $id"; 
 
         if($pdo->query($sql) == TRUE){
-            echo "<b>Usunięto użytkownika<b>";
+            echo "<b>Dane użytkownika zmienione.<b>";
         }else{
-            echo "Błąd! Nie można usunąć użytkownika";
+            echo "Błąd! Nie można zmienić danych użytkownika.";
         }
 
     }else{
-        die('Błędne id');
+        echo "cos";
     }
     // Zamknięcie połączenia z bazą danych
     unset($pdo);
-?>
+?>            

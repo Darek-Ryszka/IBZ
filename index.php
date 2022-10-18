@@ -7,6 +7,7 @@
         <title>Zadanie 2</title>
     </head>
     <body>
+        <!-- Stylizacja czcionki w CSS-->
         <style>
             *{
                 font-family: sans-serif; 
@@ -21,6 +22,7 @@
         <h5 class=navbar>Dariusz Ryszka D3 146325</h5>
         <h4><b>Dodaj użytkownika</b></h4>
 
+        <!-- Forma w HTML-->
         <form action="" method="post">
             <p>
                 <label for="firstName">Imie:</label></br>
@@ -44,16 +46,16 @@
                     echo "Błąd! Połączenie z bazą danych nie powiodło się. </br>";
                 }
 
-                // sdasdasdsadas
+                // Próba wprowadzenia danych do tabeli
                 try{
                 $sql = "INSERT INTO subscribers (fname, email) VALUES (:first_name, :email)";
                 $stmt = $pdo->prepare($sql);
                 
-                // Bind parameters to statement Przypisanie
+                // Przypisanie do pól tekstowych
                 $stmt->bindParam(':first_name', $_REQUEST['fname']);
                 $stmt->bindParam(':email', $_REQUEST['email']);
                 
-                // Execute the prepared statement Próba wykonania polecenia
+                // Próba wykonania polecenia
                 
                 $stmt->execute();
                 echo "Sukces! Dane wprowadzono poprawnie.";

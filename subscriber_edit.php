@@ -7,6 +7,7 @@
         <title>Zadanie 2</title>
     </head>
     <body>
+        <!-- Stylizacja czcionki w CSS-->
         <style>
             *{
                 font-family: sans-serif; 
@@ -16,6 +17,7 @@
         <h4><b>Edytuj użytkownika</b></h4>
 
         <?php
+            // Próba połaczenia z bazą danych
             try{
                 $pdo = new PDO("mysql:host=localhost;dbname=test", "root", "");
                 echo "Sukces! Połączenie z bazą danych powiodło się. </br>";
@@ -38,8 +40,8 @@
             // Zamknięcie połączenia z bazą danych
             unset($pdo);    
         ?>
-
-        <form action="" method="post">
+        <!-- Forma w HTML-->
+        <form action="./editbutton.php?id=<?= $id ?>" method="post">
             <p>
                 <label for="firstName">Imie:</label></br>
                 <input type="text" name="fname" id="firstName" value="<?= $row['fname']?>">
@@ -48,7 +50,7 @@
                 <label for="emailAddress">Email:</label></br>
                 <input type="email" name="email" id="emailAddress" value="<?= $row['email']?>">
             </p>
-            <input type="submit" name="insert" value="Zatwierdź zmiany">
+            <input type="submit" name="edit" value="Zatwierdź zmiany">
         </form>
     </body>
 </html>
