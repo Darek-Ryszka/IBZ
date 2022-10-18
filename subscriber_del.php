@@ -1,12 +1,12 @@
 <?php
-    // Próba połaczenia z bazą danych
+    // Próba połączenia z bazą danych
     try{
         $pdo = new PDO("mysql:host=localhost;dbname=test", "root", "");
         echo "Sukces! Połączenie z bazą danych powiodło się. </br>";
     } catch(PDOException $e){
         echo "Błąd! Połączenie z bazą danych nie powiodło się. </br>";
     }
-    // Próba pobrania id i usuniędzie użytkownika o pobranym id
+    // Próba pobrania id i usunięcia użytkownika o pobranym id
     if(isset($_GET['id'])){
 
         $id = $_GET['id'];

@@ -17,7 +17,7 @@
         <h4><b>Edytuj użytkownika</b></h4>
 
         <?php
-            // Próba połaczenia z bazą danych
+            // Próba połączenia z bazą danych
             try{
                 $pdo = new PDO("mysql:host=localhost;dbname=test", "root", "");
                 echo "Sukces! Połączenie z bazą danych powiodło się. </br>";
