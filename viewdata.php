@@ -47,16 +47,12 @@
                 if($result->rowCount() > 0){
                     echo "<table>";
                         echo "<tr>";
-                            // echo "<th>id</th>";
                             echo "<th>User name</th>";
-                            // echo "<th>Action</th>";
                             echo "<th>User add date</th>";
                         echo "</tr>";
                         while($row = $result->fetch()){
                             echo "<tr>";
-                                // echo "<td>" . $row['id'] . "</td>";
                                 echo "<td>" . $row['subscriber_name'] . "</td>";
-                                // echo "<td>" . $row['action_performed'] . "</td>";
                                 echo "<td>" . $row['date_added'] . "</td>";
                             echo "</tr>";  
                         }  
@@ -78,16 +74,12 @@
                 if($result->rowCount() > 0){
                     echo "<table>";
                         echo "<tr>";
-                            // echo "<th>id</th>";
                             echo "<th>User name</th>";
-                            // echo "<th>Action</th>";
                             echo "<th>User delete date</th>";
                         echo "</tr>";
                         while($row = $result->fetch()){
                             echo "<tr>";
-                                // echo "<td>" . $row['id'] . "</td>";
                                 echo "<td>" . $row['subscriber_name'] . "</td>";
-                                // echo "<td>" . $row['action_performed'] . "</td>";
                                 echo "<td>" . $row['date_added'] . "</td>";
                             echo "</tr>";  
                         }  
@@ -109,16 +101,12 @@
                 if($result->rowCount() > 0){
                     echo "<table>";
                         echo "<tr>";
-                            // echo "<th>id</th>";
                             echo "<th>User name</th>";
-                            // echo "<th>Action</th>";
                             echo "<th>User edit date</th>";
                         echo "</tr>";
                         while($row = $result->fetch()){
                             echo "<tr>";
-                                // echo "<td>" . $row['id'] . "</td>";
                                 echo "<td>" . $row['subscriber_name'] . "</td>";
-                                // echo "<td>" . $row['action_performed'] . "</td>";
                                 echo "<td>" . $row['date_added'] . "</td>";
                             echo "</tr>";  
                         }  
@@ -135,23 +123,40 @@
             // Widok numer 4
             echo "<h4>4. Widok wyświetlający nazwę już usuniętych użytkowników oraz daty ich dodania i usunięcia</h4>";
             try{  
-                $sql = "SELECT * FROM audit_subscribers WHERE action_performed='Deleted a subscriber'";
+                $sql = "SELECT subscriber_name, date_added FROM audit_subscribers WHERE action_performed='Deleted a subscriber' 
+                UNION
+                SELECT subscriber_name, date_added FROM audit_subscribers WHERE action_performed='Insert a new subscriber' AND subscriber_name IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')
+                GROUP BY subscriber_name ";
+
+                // EXCEPT
+                // SELECT subscriber_name AS 'subscriber_name', date_added AS 'date' FROM audit_subscribers WHERE action_performed='Insert a new subscriber' AND subscriber_name IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')
+
+                // $sql = "SELECT subscriber_name AS 'subscriber_name', date_added AS 'date_added' FROM audit_subscribers WHERE action_performed='Deleted a subscriber'
+                // EXCEPT
+                // SELECT subscriber_name AS 'subscriber_name', date_added AS 'date' FROM audit_subscribers WHERE action_performed='Insert a new subscriber' AND subscriber_name IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')
+                // ";
+
+                // $sql = "SELECT date_added AS 'da', subscriber_name, date_added FROM audit_subscribers WHERE action_performed='Deleted a subscriber'";
+
+                // $sql = "SELECT subscriber_name, date_added FROM audit_subscribers WHERE action_performed='Deleted a subscriber' AND SELECT date_added AS 'da' FROM audit_subscribers WHERE action_performed='Deleted a subscriber' AND date_added NOT IN (SELECT date_added FROM audit_subscribers WHERE action_performed='Insert a new subscriber')";
+
+                // $sql = "SELECT subscriber_name, date_added FROM audit_subscribers WHERE action_performed='Deleted a subscriber' UNION SELECT subscriber_name, date_added AS 'da' FROM audit_subscribers WHERE action_performed='Insert a new subscriber' AND subscriber_name IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')";
+
+                // UNION ALL SELECT subscriber_name, date_added AS 'da' FROM audit_subscribers WHERE action_performed='Insert a new subscriber AND subscriber_name IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')'
+
+
                 $result = $pdo->query($sql);
                 if($result->rowCount() > 0){
                     echo "<table>";
                         echo "<tr>";
-                            // echo "<th>id</th>";
                             echo "<th>User name</th>";
-                            // echo "<th>Action</th>";
                             echo "<th>User add date</th>";
                             echo "<th>User delete date</th>";
                         echo "</tr>";
                         while($row = $result->fetch()){
                             echo "<tr>";
-                                // echo "<td>" . $row['id'] . "</td>";
                                 echo "<td>" . $row['subscriber_name'] . "</td>";
-                                // echo "<td>" . $row['action_performed'] . "</td>";
-                                echo "<td>" . $row['date_added'] . "</td>";
+                                echo "<td>" . $row['data'] . "</td>";
                                 echo "<td>" . $row['date_added'] . "</td>";
                             echo "</tr>";  
                         }  
@@ -168,51 +173,28 @@
             // Widok numer 5
             echo "<h4>5. Widok wyświetlający tylko istniejących użytkowników (bez korzystania z tabelki subscribers)</h4>";
             try{
-                    $sql1 = "SELECT subscriber_name AS 'in' FROM audit_subscribers WHERE action_performed='Insert a new subscriber'"; 
+                    $sql = "SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Insert a new subscriber' AND subscriber_name NOT IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')";
 
-                    $sql2 = "SELECT subscriber_name AS 'dn' FROM audit_subscribers WHERE action_performed='Deleted a subscriber'";
-                    // OR action_performed='Updated a subscriber'
+                    $result = $pdo->query($sql);
 
-                    $result1 = $pdo->query($sql1);
-                    $result2 = $pdo->query($sql2);   
-                    
-                    if($result1->rowCount() > 0 )
-                    {
+                    if($result->rowCount() > 0){
                         echo "<table>";
-                        echo "<tr>";
-                            echo "<th>User name</th>";
-                        echo "</tr>";                   
-
-                        while($row1 = $result1->fetch())
-                        {
                             echo "<tr>";
-                                echo "<td>" . $row1['in'] . "</td>";
-                                // echo "<td>" . $row2['dn'] . "</td>";
+                                echo "<th>User name</th>";                                
                             echo "</tr>";
-                            while($row2 = $result2->fetch())
-                            { 
-                                // if($row2['dn'])                               
-                                if($row1['in'] != $row2['dn'])
-                                {
-                                    echo "<tr>";
-                                        echo "<td>" . $row1['in'] . "</td>";
-                                        echo "<td>" . $row2['dn'] . "</td>";
-                                    echo "</tr>";                                    
-                                    break;
-                                }                              
-                            }    
-                        }  
-                            echo "</table>";
-                            unset($result1, $result2 );
-                    } 
-                    else
-                    {
+                            while($row = $result->fetch()){
+                                echo "<tr>";
+                                    echo "<td>" . $row['subscriber_name'] . "</td>";
+                                echo "</tr>";  
+                            }  
+                        echo "</table>";
+                        unset($result);
+                    } else{
                         echo "Brak rekordów w bazie danych do wyświetlenia.";
                     }                    
                 }       
-                catch(PDOException $e)
-                {
-                    die("Błąd! Nie można wprowadzić danych $sql. " . $e->getMessage());
+                catch(PDOException $e){
+                    die("Błąd! $sql. " . $e->getMessage());
                 }
             // Zamknięcie połączenia z bazą danych
             unset($pdo);
