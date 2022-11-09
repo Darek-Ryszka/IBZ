@@ -41,9 +41,11 @@
         
             // Widok numer 1
             echo "<h4>1. Widok wyświetlający nazwę użytkowników oraz datę ich dodania</h4>";
-            try{
-                $sql = "SELECT * FROM audit_subscribers WHERE action_performed='Insert a new subscriber'";   
+            try{  
+                $sql = "SELECT * FROM added"; 
+
                 $result = $pdo->query($sql);
+
                 if($result->rowCount() > 0){
                     echo "<table>";
                         echo "<tr>";
@@ -63,14 +65,16 @@
                 }
             }
             catch(PDOException $e){
-                die("Błąd! Nie można wprowadzić danych $sql. " . $e->getMessage());
+                die("Błąd! $sql. " . $e->getMessage());
             }
 
             // Widok numer 2
             echo "<h4>2. Widok wyświetlający nazwę użytkowników oraz datę ich usunięcia </h4>";
             try{
-                $sql = "SELECT * FROM audit_subscribers WHERE action_performed='Deleted a subscriber'";   
+                $sql = "SELECT * FROM deleted"; 
+                
                 $result = $pdo->query($sql);
+
                 if($result->rowCount() > 0){
                     echo "<table>";
                         echo "<tr>";
@@ -80,7 +84,7 @@
                         while($row = $result->fetch()){
                             echo "<tr>";
                                 echo "<td>" . $row['subscriber_name'] . "</td>";
-                                echo "<td>" . $row['date_added'] . "</td>";
+                                echo "<td>" . $row['date_deleted'] . "</td>";
                             echo "</tr>";  
                         }  
                     echo "</table>";
@@ -90,13 +94,15 @@
                 }
             }
             catch(PDOException $e){
-                die("Błąd! Nie można wprowadzić danych $sql. " . $e->getMessage());
+                die("Błąd! $sql. " . $e->getMessage());
             }
 
             // Widok numer 3
             echo "<h4>3. Widok wyświetlający nazwę użytkowników oraz datę ich edycji</h4>";
             try{
-                $sql = "SELECT * FROM audit_subscribers WHERE action_performed='Updated a subscriber'";   
+                // $sql = "SELECT * FROM audit_subscribers WHERE action_performed='Updated a subscriber'";  
+                $sql = "SELECT * FROM updated";
+                
                 $result = $pdo->query($sql);
                 if($result->rowCount() > 0){
                     echo "<table>";
@@ -107,7 +113,7 @@
                         while($row = $result->fetch()){
                             echo "<tr>";
                                 echo "<td>" . $row['subscriber_name'] . "</td>";
-                                echo "<td>" . $row['date_added'] . "</td>";
+                                echo "<td>" . $row['date_updated'] . "</td>";
                             echo "</tr>";  
                         }  
                     echo "</table>";
@@ -117,35 +123,17 @@
                 }
             }
             catch(PDOException $e){
-                die("Błąd! Nie można wprowadzić danych $sql. " . $e->getMessage());
+                die("Błąd! $sql. " . $e->getMessage());
             }
 
             // Widok numer 4
             echo "<h4>4. Widok wyświetlający nazwę już usuniętych użytkowników oraz daty ich dodania i usunięcia</h4>";
             try{  
-                $sql = "SELECT subscriber_name, date_added FROM audit_subscribers WHERE action_performed='Deleted a subscriber' 
-                UNION
-                SELECT subscriber_name, date_added FROM audit_subscribers WHERE action_performed='Insert a new subscriber' AND subscriber_name IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')
-                GROUP BY subscriber_name ";
 
-                // EXCEPT
-                // SELECT subscriber_name AS 'subscriber_name', date_added AS 'date' FROM audit_subscribers WHERE action_performed='Insert a new subscriber' AND subscriber_name IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')
-
-                // $sql = "SELECT subscriber_name AS 'subscriber_name', date_added AS 'date_added' FROM audit_subscribers WHERE action_performed='Deleted a subscriber'
-                // EXCEPT
-                // SELECT subscriber_name AS 'subscriber_name', date_added AS 'date' FROM audit_subscribers WHERE action_performed='Insert a new subscriber' AND subscriber_name IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')
-                // ";
-
-                // $sql = "SELECT date_added AS 'da', subscriber_name, date_added FROM audit_subscribers WHERE action_performed='Deleted a subscriber'";
-
-                // $sql = "SELECT subscriber_name, date_added FROM audit_subscribers WHERE action_performed='Deleted a subscriber' AND SELECT date_added AS 'da' FROM audit_subscribers WHERE action_performed='Deleted a subscriber' AND date_added NOT IN (SELECT date_added FROM audit_subscribers WHERE action_performed='Insert a new subscriber')";
-
-                // $sql = "SELECT subscriber_name, date_added FROM audit_subscribers WHERE action_performed='Deleted a subscriber' UNION SELECT subscriber_name, date_added AS 'da' FROM audit_subscribers WHERE action_performed='Insert a new subscriber' AND subscriber_name IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')";
-
-                // UNION ALL SELECT subscriber_name, date_added AS 'da' FROM audit_subscribers WHERE action_performed='Insert a new subscriber AND subscriber_name IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')'
-
+                $sql ="SELECT * FROM subscribe_time";
 
                 $result = $pdo->query($sql);
+
                 if($result->rowCount() > 0){
                     echo "<table>";
                         echo "<tr>";
@@ -156,8 +144,8 @@
                         while($row = $result->fetch()){
                             echo "<tr>";
                                 echo "<td>" . $row['subscriber_name'] . "</td>";
-                                echo "<td>" . $row['data'] . "</td>";
                                 echo "<td>" . $row['date_added'] . "</td>";
+                                echo "<td>" . $row['date_deleted'] . "</td>";
                             echo "</tr>";  
                         }  
                     echo "</table>";
@@ -167,35 +155,36 @@
                 }
             }
             catch(PDOException $e){
-                die("Błąd! Nie można wprowadzić danych $sql. " . $e->getMessage());
+                die("Błąd! $sql. " . $e->getMessage());
             }
 
             // Widok numer 5
             echo "<h4>5. Widok wyświetlający tylko istniejących użytkowników (bez korzystania z tabelki subscribers)</h4>";
             try{
-                    $sql = "SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Insert a new subscriber' AND subscriber_name NOT IN (SELECT subscriber_name FROM audit_subscribers WHERE action_performed='Deleted a subscriber')";
 
-                    $result = $pdo->query($sql);
+                $sql = "SELECT * FROM  existing";
 
-                    if($result->rowCount() > 0){
-                        echo "<table>";
+                $result = $pdo->query($sql);
+
+                if($result->rowCount() > 0){
+                    echo "<table>";
+                        echo "<tr>";
+                            echo "<th>User name</th>";                                
+                        echo "</tr>";
+                        while($row = $result->fetch()){
                             echo "<tr>";
-                                echo "<th>User name</th>";                                
-                            echo "</tr>";
-                            while($row = $result->fetch()){
-                                echo "<tr>";
-                                    echo "<td>" . $row['subscriber_name'] . "</td>";
-                                echo "</tr>";  
-                            }  
-                        echo "</table>";
-                        unset($result);
-                    } else{
-                        echo "Brak rekordów w bazie danych do wyświetlenia.";
-                    }                    
-                }       
-                catch(PDOException $e){
-                    die("Błąd! $sql. " . $e->getMessage());
-                }
+                                echo "<td>" . $row['subscriber_name'] . "</td>";
+                            echo "</tr>";  
+                        }  
+                    echo "</table>";
+                    unset($result);
+                } else{
+                    echo "Brak rekordów w bazie danych do wyświetlenia.";
+                }                    
+            }       
+            catch(PDOException $e){
+                die("Błąd! $sql. " . $e->getMessage());
+            }
             // Zamknięcie połączenia z bazą danych
             unset($pdo);
         ?>
