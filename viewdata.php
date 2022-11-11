@@ -99,11 +99,11 @@
 
             // Widok numer 3
             echo "<h4>3. Widok wyświetlający nazwę użytkowników oraz datę ich edycji</h4>";
-            try{
-                // $sql = "SELECT * FROM audit_subscribers WHERE action_performed='Updated a subscriber'";  
+            try{  
                 $sql = "SELECT * FROM updated";
                 
                 $result = $pdo->query($sql);
+
                 if($result->rowCount() > 0){
                     echo "<table>";
                         echo "<tr>";
@@ -129,7 +129,6 @@
             // Widok numer 4
             echo "<h4>4. Widok wyświetlający nazwę już usuniętych użytkowników oraz daty ich dodania i usunięcia</h4>";
             try{  
-
                 $sql ="SELECT * FROM subscribe_time";
 
                 $result = $pdo->query($sql);
@@ -161,7 +160,6 @@
             // Widok numer 5
             echo "<h4>5. Widok wyświetlający tylko istniejących użytkowników (bez korzystania z tabelki subscribers)</h4>";
             try{
-
                 $sql = "SELECT * FROM  existing";
 
                 $result = $pdo->query($sql);
