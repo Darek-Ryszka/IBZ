@@ -1,6 +1,6 @@
 <?php
         $connection = mysqli_connect('localhost', 'root', '', 'waluty');
-        $result = mysqli_query($connection, "SELECT DISTINCT * FROM history");
+        $result = mysqli_query($connection, "SELECT * FROM history GROUP BY date");
         if($result){
             echo "Połączono";
         }
@@ -14,11 +14,12 @@
 
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-            ['Year', 'Sales', 'Expenses'],
+            ['Date', 'EURsell', 'EURsell'],
           <?php
+         
             while($row = mysqli_fetch_array($result)){
-                    echo "['".$row['date']."', '".$row['EURbuy']."', '".$row['EURsell']."'],";
-                        }
+                    echo "[['".$row['date']."'], ['".$row['EURbuy']."'], ['".$row['EURsell']."']],";
+                        }                     
             ?>          
         ]);
 
@@ -33,6 +34,7 @@
       }
     </script>
   </head>
+
   <body>
     <div id="curve_chart" style="width: 900px; height: 500px"></div>
   </body>
