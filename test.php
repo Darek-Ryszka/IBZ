@@ -14,18 +14,25 @@
 
       function drawChart() {
         var data = google.visualization.arrayToDataTable([
-            ['Date', 'EURsell', 'EURsell'],
+            ['Day', 'Buy', 'Sell'],
           <?php
          
             while($row = mysqli_fetch_array($result)){
-                    echo "[['".$row['date']."'], ['".$row['EURbuy']."'], ['".$row['EURsell']."']],";
+                    echo "['".$row['date']."', ['".$row['EURbuy']."'], ['".$row['EURsell']."']],";
                         }                     
             ?>          
         ]);
 
         var options = {
-          title: 'Company Performance',
-          legend: { position: 'bottom' }
+          title: 'Kurs Euro',
+          legend: { position: 'top' },
+          hAxis: {
+          title: 'Data'
+        },
+        vAxis: {
+          title: 'PLN'
+        },
+
         };
 
         var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
@@ -36,6 +43,6 @@
   </head>
 
   <body>
-    <div id="curve_chart" style="width: 900px; height: 500px"></div>
+    <div id="curve_chart" style="width: 2200px; height: 720px"></div>
   </body>
 </html>
