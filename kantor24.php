@@ -35,7 +35,7 @@
         google.charts.setOnLoadCallback(drawChart);
         google.charts.setOnLoadCallback(drawChart2);
 
-
+        // Funkcja rysująca pierwszy wykres
         function drawChart() {
           var data = google.visualization.arrayToDataTable([
               ['Day', 'Kupno', 'Sprzedaż'],
@@ -64,6 +64,7 @@
           chart.draw(data, options);
         }
 
+        // Funkcja rysująca drugi wykres
         function drawChart2() {
           var data2 = google.visualization.arrayToDataTable([
               ['Day', 'Kupno', 'Sprzedaż'],
