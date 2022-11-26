@@ -1,12 +1,16 @@
 <!-- Połączenie z bazą danych i ich sortowanie/grupowanie -->
 <?php
-        $connection = mysqli_connect('localhost', 'root', '', 'waluty');
-        $result = mysqli_query($connection, "SELECT * FROM history GROUP BY date ORDER BY date_time LIMIT 100");
-        $result2 = mysqli_query($connection, "SELECT * FROM history GROUP BY date ORDER BY date_time LIMIT 100");
-        if($result){
-            // echo "Połączono";
-        }
-    ?>
+    $connection = mysqli_connect('localhost', 'root', '', 'waluty');
+
+    if (mysqli_connect_errno()) {
+      printf("Połączenie z bazą danych nieudane: %s\n", mysqli_connect_error());
+      exit();
+  }
+
+    $result = mysqli_query($connection, "SELECT * FROM history GROUP BY date ORDER BY date_time LIMIT 100");
+    $result2 = mysqli_query($connection, "SELECT * FROM history GROUP BY date ORDER BY date_time LIMIT 100");
+?>
+
 <!DOCTYPE html>    
 <html lang="pl">
   <head>
@@ -163,3 +167,8 @@
     <script type="text/javascript" src="script.js"></script>
   </body>
 </html>
+
+<?php
+  // Zamknięcie połączenia z bazą danych
+  $connection->close();
+?>
